@@ -1,6 +1,6 @@
 /* global URL */
 import {BuildListingData, JobListingData, JobObjectType, RestApi, ServerData} from '../service';
-import {Config, ServerConfig} from '../config';
+import {config, ServerConfig} from '../config';
 import {ConfigurationChangeEvent, workspace} from 'vscode';
 import {Job} from './job';
 import {JobContainer} from './jobcontainer';
@@ -18,41 +18,22 @@ export class Server extends JobContainerBase {
 	private _config : ServerConfig;
 
 	/** @internal */
-	constructor (parent: JobItem, config: ServerConfig) {
+	constructor (parent: JobItem, cfg: ServerConfig) {
 		super(parent);
-		this._config = config;
+		this._config = cfg;
 		workspace.onDidChangeConfiguration(this.onConfigurationChanged, this);
 	}
 
-	/**
-	 * {@inheritDoc JobItem.url}
-	 * @override
-	 */
 	override get url () { return new URL(this._config.url); }
-
-	/**
-	 * {@inheritDoc JobItem.label}
-	 * @override
-	 */
 	override get label () { return this._config.label; }
-
-	/**
-	 * {@inheritDoc JobItem.description}
-	 * @override
-	 */
 	override get description () { return this._data ? this._data.description : ''; }
-
-	/**
-	 * {@inheritDoc JobItem.objectType}
-	 * @override
-	 */
 	override get objectType () { return JobObjectType.server; }
 
 
 	/** @internal */
 	onConfigurationChanged (e : ConfigurationChangeEvent) {
 		if (!e.affectsConfiguration('jenkinsJockey')) return;
-		const servers = Config.getServers();
+		const servers = config.getServers();
 		const server = servers.find(s => s.url === this.url.hostname);
 		if (server) {
 			const oldData = this._config;

@@ -1,6 +1,6 @@
 /* global URL */
 import {ConfigurationChangeEvent, window, workspace} from 'vscode';
-import {Config} from '../config';
+import {config} from '../config';
 import {JobItem} from './jobitem';
 import {Server} from './server';
 
@@ -20,7 +20,7 @@ export class Servers extends JobItem {
 
 	/** @internal */
 	override async doRefreshData () : Promise<void> {
-		const servers = Config.getServers();
+		const servers = config.getServers();
 		const childByUrl : {[key : string] : JobItem} = {};
 		this.children.forEach(c => {
 			childByUrl[c.url.toString()] = c;
@@ -39,17 +39,7 @@ export class Servers extends JobItem {
 		}
 	}
 
-
-	/**
-	 * {@inheritDoc JobItem.url}
-	 * @override
-	 */
 	override get url () { return new URL('http://x.com'); }
-
-	/**
-	 * {@inheritDoc JobItem.label}
-	 * @override
-	 */
 	override get label () { return ''; }
 
 	/**

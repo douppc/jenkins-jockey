@@ -1,5 +1,5 @@
 /* global NodeJS, setTimeout, clearTimeout */
-import {Build, Job, JobItemChange} from '../model';
+import {Build, Job, JobItemChangeEvent} from '../model';
 import {commands, Disposable, EventEmitter} from 'vscode';
 import {ReplayFileChangeEvent, ReplayFileChangeType} from './replayfilechangeevent';
 import {ReplayFileData, RestApi} from '../service';
@@ -8,6 +8,8 @@ import {ReplayFile} from './replayfile';
 import {ReplayFilesEvent} from './replayfilesevent';
 
 export {ReplayFile} from './replayfile';
+export {ReplayFileChangeEvent, ReplayFileChangeType} from './replayfilechangeevent';
+export {ReplayFilesEvent} from './replayfilesevent';
 export {ReplayLogHandler} from './replayloghandler';
 
 const _fileRefreshTime = 3000;
@@ -29,7 +31,7 @@ class ReplayFileImpl extends ReplayFile {
 	}
 }
 
-function buildChanged (c: JobItemChange) {
+function buildChanged (c: JobItemChangeEvent) {
 	if ((!c.changedProperties || c.changedProperties.includes('status')) && c.item instanceof Build &&
 		c.item.status !== BuildStatus.building) {
 		if (_buildRefreshTimer) clearTimeout(_buildRefreshTimer);
@@ -37,6 +39,9 @@ function buildChanged (c: JobItemChange) {
 	}
 }
 
+/**
+ * A namespace serving as the entry point for functionality having to do with the replay capability.
+ */
 export namespace replay {
 
 	/**
@@ -110,11 +115,13 @@ export namespace replay {
 
 	/**
 	 * Event fired when the active replay build changes.
+	 * @eventProperty
 	 */
 	export const onDidChangeActive = _onDidChangeActive.event;
 
 	/**
 	 * Event fired when the list of replay files changes.
+	 * @eventProperty
 	 */
 	export const onDidChangeFiles = _onDidChangeFiles.event;
 

@@ -60,7 +60,7 @@
     },
     "ignorePatterns": [
         "out",
-        "dist",
+        "dist", 
         "**/*.d.ts"
     ]
 }

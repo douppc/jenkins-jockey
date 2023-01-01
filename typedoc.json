@@ -1,0 +1,48 @@
+{
+    "$schema": "https://typedoc.org/schema.json",
+    "entryPoints": ["./src/index.ts"],
+	"basePath": "./src",
+    "cleanOutputDir": false,
+    "disableSources": true,
+    "excludePrivate": true,
+    "excludeInternal": true,
+    "externalSymbolLinkMappings": {
+        "@types/node" : {
+            "URL" : "https://nodejs.org/api/url.html"
+        },
+        "typescript": {
+            "Promise": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise"
+        },
+        "@types/vscode": {
+            "Disposable" : "https://code.visualstudio.com/api/references/vscode-api#Disposable"
+        }
+    },
+    "githubPages": true,
+    "includeVersion": false,
+    "intentionallyNotExported": [
+        "JobTreeItem",
+        "ReplayTreeItem"
+    ],
+    "markedOptions": {
+        "gfm" : true
+    },
+    "name": "Jenkins Jockey",
+    "navigationLinks": {
+        "link" : "https://example.com"
+    },
+    "out": "dist/docs",
+    "sidebarLinks": {
+        "API Home" : "/home/path.html"
+    },
+    "readme": "./docs/DOCS.md",
+	"theme": "github-wiki",
+    "treatWarningsAsErrors": false,
+    "visibilityFilters": {
+        "protected": false,
+        "private": false,
+        "inherited": false,
+        "external": false
+    },
+
+    "entryDocument" : "README.md"
+}

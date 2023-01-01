@@ -22,21 +22,25 @@
 
 
 export {commands} from './commands';
-export {model} from './model';
-
-export {Build} from './model/build';
-export {Job} from './model/job';
+export {config, ServerConfig} from './config';
 export {
+	Build,
+	Job,
+	JobContainer,
+	JobContainerBase,
 	JobItem,
-	JobItemLoadState
-} from './model/jobitem';
-export {JobContainer} from './model/jobcontainer';
-export {JobContainerBase} from './model/jobcontainerbase';
-export {Server} from './model/server';
-export {Servers} from './model/servers';
+	JobItemChangeEvent,
+	JobItemLoadState,
+	model,
+	Server,
+	Servers,
+	UnknownItem
+} from './model';
+
 export {
 	BuildData,
 	BuildListingData,
+	HealthReportData,
 	IncrementalLogData,
 	JobData,
 	JobContainerData,
@@ -45,3 +49,11 @@ export {
 	ReplayFileData,
 	ServerData
 } from './service';
+
+export {
+	replay,
+	ReplayFile,
+	ReplayFileChangeEvent,
+	ReplayFileChangeType,
+	ReplayFilesEvent
+} from './replay';

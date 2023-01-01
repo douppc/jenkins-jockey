@@ -46,24 +46,11 @@ export class Build extends JobItem {
 		this._listing = listing;
 	}
 
-	/**
-	 * {@inheritDoc JobItem.url
-	 * @override
-	 */
 	override get url () { return this._listing.url; }
-
-	/**
-	 * {@inheritDoc JobItem.label}
-	 * @override
-	 */
 	override get label () {
 		return this._data ? this._data.displayName : `#${this._listing.number.toString()}`;
 	}
 
-	/**
-	 * {@inheritDoc JobItem.description}
-	 * @override
-	 */
 	override get description () { return this._data ? this._data.description : ''; }
 
 	/** @internal */

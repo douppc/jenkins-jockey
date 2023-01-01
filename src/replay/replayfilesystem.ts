@@ -15,8 +15,14 @@ import {TextDecoder, TextEncoder} from 'util';
 import {replay} from '.';
 import {ReplayDirectory} from './replaydirectory';
 import {ReplayFilesEvent} from './replayfilesevent';
+import {ReplayFileStat} from './replayfilestat';
 
 const _eventFireTimeout = 5;
+
+/**
+ * Provides a filesystem for original and current contents of {@link ReplayFile}s.
+ * @internal
+ */
 export class ReplayFileSystemProvider implements FileSystemProvider {
 	private _subscriptions : {[k:string] : Disposable} = {};
 	constructor () {
@@ -24,12 +30,14 @@ export class ReplayFileSystemProvider implements FileSystemProvider {
 	}
 
 	getItem (uri: Uri) {
+		// The files are a flat list under the root '/'.
 		return replay.getFiles().find(f => uri.path === `/${f.fileName}`);
 	}
 
 	createDirectory (): void {}
 	delete (): void {}
 	readDirectory (uri: Uri): [string, FileType][] {
+		// The scheme doesn't matter, just return the list of names of the files.
 		if (uri.path.length === 0 || uri.path === '/') {
 			return replay.getFiles().map(f => [
 				f.fileName,
@@ -42,6 +50,7 @@ export class ReplayFileSystemProvider implements FileSystemProvider {
 	readFile (uri : Uri): Uint8Array {
 		const item = this.getItem(uri);
 		if (item) {
+			// The scheme tells us which file content we want (current or original).
 			return new TextEncoder().encode(uri.scheme === replay.uriScheme
 				? item.content
 				: item.originalContent);
@@ -53,7 +62,7 @@ export class ReplayFileSystemProvider implements FileSystemProvider {
 	stat (uri: Uri): FileStat {
 		if (uri.path.length === 0 || uri.path === '/') return new ReplayDirectory('/');
 		const item = this.getItem(uri);
-		if (item) return item;
+		if (item) return new ReplayFileStat(item, uri);
 		return new ReplayDirectory('');
 	}
 
@@ -64,10 +73,12 @@ export class ReplayFileSystemProvider implements FileSystemProvider {
 
 	writeFile (uri : Uri, content : Uint8Array) : void {
 		const matching = this.getItem(uri);
-		if (matching) {
+		if (matching && uri.scheme === replay.uriScheme) {
 			matching.content = new TextDecoder().decode(content);
-			this._fireSoon({'type': FileChangeType.Changed,
-				uri});
+			this._fireSoon({
+				'type': FileChangeType.Changed,
+				uri
+			});
 		}
 	}
 

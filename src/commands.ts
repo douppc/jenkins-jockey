@@ -4,7 +4,7 @@ import {
 	env, ExtensionContext, QuickPickItem, SecretStorage, TreeItem, Uri, commands as vsc, window, workspace
 } from 'vscode';
 import {replay, ReplayFile} from './replay';
-import {Config} from './config';
+import {config} from './config';
 import {JobObjectType} from './service';
 import {JobTreeItem} from './jobtree';
 import {ReplayTreeItem} from './replay/replaytreeitem';
@@ -142,7 +142,7 @@ export namespace commands {
 			}
 		}
 		if (url) {
-			await Config.addServer(url);
+			await config.addServer(url);
 			let creds = await getApiCreds(url);
 			if (!creds) {
 				creds = await askForCreds(url);
@@ -166,7 +166,7 @@ export namespace commands {
 	 */
 	export async function disconnectServer (server : TreeItem | Server | URL | undefined) {
 		const url = await urlFromServerInput(server);
-		if (url) await Config.removeServer(url);
+		if (url) await config.removeServer(url);
 	}
 
 	/**
@@ -208,7 +208,7 @@ export namespace commands {
 				'value': oldText
 			});
 		}
-		if (text) await Config.renameServer(url, text);
+		if (text) await config.renameServer(url, text);
 	}
 
 	/**
@@ -247,7 +247,7 @@ export namespace commands {
 		if (item instanceof JobTreeItem && item.jobItem instanceof UnknownItem) ukItem = item.jobItem;
 		else if (item instanceof UnknownItem) ukItem = item;
 		if (ukItem) {
-			await Config.addExtraJobContainerClass(ukItem.className);
+			await config.addExtraJobContainerClass(ukItem.className);
 			await refreshInvalidParents();
 		}
 	}
@@ -264,7 +264,7 @@ export namespace commands {
 		if (item instanceof JobTreeItem && item.jobItem instanceof UnknownItem) ukItem = item.jobItem;
 		else if (item instanceof UnknownItem) ukItem = item;
 		if (ukItem) {
-			await Config.addExtraJobClass(ukItem.className);
+			await config.addExtraJobClass(ukItem.className);
 			await refreshInvalidParents();
 		}
 	}
@@ -331,14 +331,14 @@ export namespace commands {
 	 * Sets the hideDisabled configuration option to true.
 	 */
 	export async function hideDisabled () {
-		await Config.setHideDisabled(true);
+		await config.setHideDisabled(true);
 	}
 
 	/**
 	 * Sets the hideDisabled configuration to false.
 	 */
 	export async function showDisabled () {
-		await Config.setHideDisabled(false);
+		await config.setHideDisabled(false);
 	}
 
 	/**
