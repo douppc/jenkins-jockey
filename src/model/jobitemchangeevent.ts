@@ -4,9 +4,9 @@ import {JobItem} from './jobitem';
  * Represents a change to a JobItem.
  * This is emitted any time children or any properties of a JobItem have changed.
  * @public
- * @category Event
+ * @event
  */
-export class JobItemChange {
+export class JobItemChangeEvent {
 	private _item : JobItem;
 	private _changedProperties : string[] | undefined;
 
@@ -29,6 +29,8 @@ export class JobItemChange {
 
 	/**
 	 * Indicates whether a given property has changed.
+	 * This is more convenient than checking the {@link JobItemChangeEvent.changedProperties} property since
+	 * the property may be `undefined`, which indicates that all properties changed.
 	 * @param prop - The name of the property to check.
 	 * @returns true if the property changed, false otherwise.
 	 */

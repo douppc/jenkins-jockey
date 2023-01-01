@@ -3,6 +3,9 @@ import {assertObject} from './common';
 
 /**
  * A health report entry for a build.
+ * @public
+ * @sealed
+ * @category API Response
  */
 export class HealthReportData {
 	private _data : any;

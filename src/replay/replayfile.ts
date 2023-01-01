@@ -1,13 +1,34 @@
-import {EventEmitter, FileStat, FileType, Uri} from 'vscode';
+import {EventEmitter, Uri} from 'vscode';
 import {ReplayFileChangeEvent, ReplayFileChangeType} from './replayfilechangeevent';
 import {replay} from '.';
 import {ReplayFileData} from '../service';
-export class ReplayFile implements FileStat {
+
+/**
+ * A file included in a job replay.
+ *
+ * @remarks
+ * These files can be retrieved from {@link replay.getFiles} and represent each of the files that can be
+ * modified when running the replay for the active build.
+ *
+ * Each `ReplayFile` is effectively two files:
+ * - current content: a file is provided at the URI provided by the {@link ReplayFile.uri} property that
+ *   represents the current content of the file that will be submitted when the next replay is triggered.
+ * - original content: a file is preovided at the URI provided by the {@link ReplayFile.origUri} property that
+ *   represents the original content of the file from the previous build.
+ *
+ * These URIs can then be used to view the respective content, view diffs, etc.
+ * @category Replay
+ */
+export class ReplayFile {
+
+	/** @internal */
 	protected _data;
+
+	/** @internal */
 	protected _content;
+
+	/** @internal */
 	protected _onDidChangeContent = new EventEmitter<ReplayFileChangeEvent>();
-	private _ctime = Date.now();
-	private _mtime = this._ctime;
 
 	/** @internal */
 	constructor (data : ReplayFileData) {
@@ -15,17 +36,27 @@ export class ReplayFile implements FileStat {
 		this._content = data.contents;
 	}
 
+	/**
+	 * The representation of the file retrieved from the API.
+	 */
 	get data () { return this._data; }
-	get type () { return FileType.File; }
-	get ctime () { return this._ctime; }
-	get mtime () { return this._mtime; }
-	get size () { return this._content.length; }
+
+	/**
+	 * The name of the file with the appropriate extension (<whatever>.groovy).
+	 */
 	get fileName () {
 		// eslint-disable-next-line no-magic-numbers
 		return `${this._data.formName.substring(2)}.groovy`;
 	}
 
+	/**
+	 * The label used to display the file in the tree, if relevant.
+	 */
 	get label () { return this._data.label; }
+
+	/**
+	 * The current content of the file.
+	 */
 	get content () { return this._content; }
 	set content (c : string) {
 		if (c !== this._content) {
@@ -34,7 +65,14 @@ export class ReplayFile implements FileStat {
 		}
 	}
 
+	/**
+	 * The content of the file from the previous build.
+	 */
 	get originalContent () { return this._data.contents; }
+
+	/**
+	 * The URI that can be used access the curent contents of the file.
+	 */
 	get uri () {
 		return Uri.from({
 			'path': `/${this.fileName}`,
@@ -42,6 +80,9 @@ export class ReplayFile implements FileStat {
 		});
 	}
 
+	/**
+	 * The URI that can be used to access the contents of the file from the previous build.
+	 */
 	get origUri () {
 		return Uri.from({
 			'path': `/${this.fileName}`,
@@ -49,6 +90,19 @@ export class ReplayFile implements FileStat {
 		});
 	}
 
-	public revert () { this._content = this._data.contents; }
+	/**
+	 * Reverts the current content of the file back to the original content from the previous build.
+	 */
+	public revert () {
+		if (this.content !== this._data.contents) {
+			this._content = this._data.contents;
+			this._onDidChangeContent.fire(new ReplayFileChangeEvent(this, ReplayFileChangeType.content));
+		}
+	}
+
+	/**
+	 * Event fired when the content or original content of this file changes.
+	 * @eventProperty
+	 */
 	public onDidChangeContent = this._onDidChangeContent.event;
 }

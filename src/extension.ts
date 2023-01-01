@@ -1,3 +1,4 @@
+import * as JJAPI from './index';
 import {ExtensionContext, languages, TreeViewOptions, window, workspace} from 'vscode';
 import {replay, ReplayLogHandler} from './replay';
 import {initialize as apiInit} from './service/restapi';
@@ -33,6 +34,7 @@ export function activate (context: ExtensionContext) {
 	context.subscriptions.push(logHandler);
 	context.subscriptions.push(languages.registerDocumentLinkProvider({'language': replay.logLangId},
 		logHandler));
+	return JJAPI;
 }
 
 export function deactivate () {}

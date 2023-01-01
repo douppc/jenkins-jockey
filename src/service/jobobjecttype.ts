@@ -1,4 +1,4 @@
-import {Config} from '../config';
+import {config} from '../config';
 
 /**
  * Converts a class name used by Jenkins to an object type used by Jenkins Jockey.
@@ -16,9 +16,9 @@ export function classToType (c : string) : JobObjectType {
 		return JobObjectType.job;
 	} else if (c === 'org.jenkinsci.plugins.workflow.job.WorkflowRun') {
 		return JobObjectType.build;
-	} else if (Config.getExtraJobContainerClasses().includes(c)) {
+	} else if (config.getExtraJobContainerClasses().includes(c)) {
 		return JobObjectType.jobContainer;
-	} else if (Config.getExtraJobClasses().includes(c)) {
+	} else if (config.getExtraJobClasses().includes(c)) {
 		return JobObjectType.job;
 	}
 	return JobObjectType.invalid;
@@ -43,12 +43,12 @@ export function classToType (c : string) : JobObjectType {
  * container or a job. While we have knowledge of a few plugins that provide job containers and jobs, it is
  * impossible to guarantee which for plugins we've never seen. To combat this, we provide a facility to
  * configure additional classes that can be considered {@link Job} and {@link JobContainer} via the
- * {@link Config.extraJobClasses} and {@link Config.extraJobContainerClasses} functions, respectively.
+ * {@link config.getExtraJobClasses} and {@link config.getExtraJobContainerClasses} functions, respectively.
  *
  * If a class is encountered that Jenkins Jockey does not recognize, the label will have an " (unknown)"
  * suffix and there will be two commands in the contextual menu that allow the user to say whether that object
  * is a job or job container. This is ultimately shorthand for adding those classes to the configuration by
- * hand or by calling the {@link Config.addExtraJobClass} or {@link Config.addExtraJobContainerClass}
+ * hand or by calling the {@link config.addExtraJobClass} or {@link config.addExtraJobContainerClass}
  * functions to add them automatically.
  *
  * @public

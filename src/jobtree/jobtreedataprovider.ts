@@ -1,6 +1,6 @@
 /* global NodeJS, clearTimeout, setTimeout */
 import {
-	Build, BuildStatus, Job, JobItem, JobItemChange, JobItemLoadState, JobStatus, model, Servers
+	Build, BuildStatus, Job, JobItem, JobItemChangeEvent, JobItemLoadState, JobStatus, model, Servers
 } from '../model';
 import {
 	ConfigurationChangeEvent,
@@ -16,7 +16,7 @@ import {
 	window,
 	workspace
 } from 'vscode';
-import {Config} from '../config';
+import {config} from '../config';
 import {JobTreeItem} from './jobtreeitem';
 
 // Min time between event fires from the tree.
@@ -45,7 +45,7 @@ export class JobTreeDataProvider implements TreeDataProvider<JobItem>, Disposabl
 	constructor () {
 		this._subscriptions[model.servers.id] = model.servers.onDidChangeData(this.jobItemChanged, this);
 		this._subscriptions[''] = workspace.onDidChangeConfiguration(this.configurationChanged, this);
-		this._hideDisabled = Config.hideDisabled();
+		this._hideDisabled = config.hideDisabled();
 	}
 
 	getTreeItem (element: JobItem) : JobTreeItem {
@@ -75,7 +75,7 @@ export class JobTreeDataProvider implements TreeDataProvider<JobItem>, Disposabl
 			}
 			items = model.servers.children;
 		}
-		if (Config.hideDisabled()) {
+		if (config.hideDisabled()) {
 			return items.filter(i => !(i instanceof Job) || i.buildable ||
 				i.loadState === JobItemLoadState.loading || i.loadState === JobItemLoadState.sparse);
 		}
@@ -83,13 +83,13 @@ export class JobTreeDataProvider implements TreeDataProvider<JobItem>, Disposabl
 	}
 
 	private configurationChanged (e: ConfigurationChangeEvent) {
-		if (!e.affectsConfiguration('jenkinsJockey') || Config.hideDisabled() === this._hideDisabled) return;
+		if (!e.affectsConfiguration('jenkinsJockey') || config.hideDisabled() === this._hideDisabled) return;
 		this._treeChangeEmitter.fire(model.servers.getAllChildren().filter(
 			p => p.children.some(c => c instanceof Job && !c.buildable)
 		));
 	}
 
-	private jobItemChanged (c: JobItemChange) {
+	private jobItemChanged (c: JobItemChangeEvent) {
 		if (c.changedProperties && c.changedProperties.includes('buildable') && this._hideDisabled &&
 				c.item.parent) {
 			this.fireTreeChange(c.item.parent);

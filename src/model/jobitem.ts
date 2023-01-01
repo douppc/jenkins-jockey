@@ -1,6 +1,6 @@
 /* global URL */
 import {Event, EventEmitter} from 'vscode';
-import {JobItemChange} from './jobitemchange';
+import {JobItemChangeEvent} from './jobitemchangeevent';
 import {JobObjectType} from '../service';
 
 /**
@@ -33,7 +33,7 @@ export abstract class JobItem {
 	private _expanded = false;
 
 	/** @internal */
-	protected _onDidChangeData : EventEmitter<JobItemChange> = new EventEmitter<JobItemChange>();
+	protected _onDidChangeData : EventEmitter<JobItemChangeEvent> = new EventEmitter<JobItemChangeEvent>();
 	private _batchCount = 0;
 	private _changedProp : Set<string> = new Set<string>();
 	private _loadState : JobItemLoadState = JobItemLoadState.sparse;
@@ -52,7 +52,7 @@ export abstract class JobItem {
 	 * Event fired when the data for the job item changes (properties, children, etc).
 	 * @eventProperty
 	 */
-	readonly onDidChangeData : Event<JobItemChange> = this._onDidChangeData.event;
+	readonly onDidChangeData : Event<JobItemChangeEvent> = this._onDidChangeData.event;
 
 	/**
 	 * The unique ID of this instance of job item.
@@ -64,7 +64,7 @@ export abstract class JobItem {
 	 * The label that can be used to display the item in a UI.
 	 * The default implementation returns the label that was set on construction. If this label changes
 	 */
-	abstract readonly label : string;
+	abstract get label() : string;
 
 	/**
 	 * True if the item has been expanded (i.e. its children and data are available), false otherwise.
@@ -103,7 +103,7 @@ export abstract class JobItem {
 	/**
 	 * The URL for the job item.
 	 */
-	abstract readonly url : URL;
+	abstract get url() : URL;
 
 	/**
 	 * The load state of the JobItem.
@@ -180,7 +180,7 @@ export abstract class JobItem {
 		} finally {
 			if (this._loadState === JobItemLoadState.loading) {
 				this._loadState = JobItemLoadState.loaded;
-				this._onDidChangeData.fire(new JobItemChange(this, ['loadState']));
+				this._onDidChangeData.fire(new JobItemChangeEvent(this, ['loadState']));
 			}
 		}
 		return Promise.resolve();
@@ -193,7 +193,7 @@ export abstract class JobItem {
 	async expand () : Promise<void> {
 		if (!this._expanded) {
 			this._expanded = true;
-			this._onDidChangeData.fire(new JobItemChange(this, ['expanded']));
+			this._onDidChangeData.fire(new JobItemChangeEvent(this, ['expanded']));
 			await this.refreshData();
 		}
 	}
@@ -222,7 +222,7 @@ export abstract class JobItem {
 		} finally {
 			this._batchCount--;
 			if (this._batchCount === 0) {
-				this._onDidChangeData.fire(new JobItemChange(this, Array.from(this._changedProp)));
+				this._onDidChangeData.fire(new JobItemChangeEvent(this, Array.from(this._changedProp)));
 			}
 		}
 	}
@@ -234,7 +234,7 @@ export abstract class JobItem {
 	 */
 	protected notifyPropertyChange (prop : string) {
 		if (this._batchCount) this._changedProp.add(prop);
-		else this._onDidChangeData.fire(new JobItemChange(this, [prop]));
+		else this._onDidChangeData.fire(new JobItemChangeEvent(this, [prop]));
 	}
 
 	/**
