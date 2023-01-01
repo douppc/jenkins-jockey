@@ -1,0 +1,66 @@
+{
+    "root": true,
+    "parser": "@typescript-eslint/parser",
+    "parserOptions": {
+        "ecmaVersion": 6,
+        "sourceType": "module"
+    },
+    "plugins": [
+        "@typescript-eslint"
+    ],
+    "extends" : [
+        "eslint:all",
+        "plugin:@typescript-eslint/recommended"
+    ],
+    "rules": {
+        "@typescript-eslint/naming-convention": "error",
+        "@typescript-eslint/no-empty-function" : "off",
+        "@typescript-eslint/no-namespace" : "off",
+        "@typescript-eslint/no-shadow": "error",
+        "@typescript-eslint/semi": "error",
+        "arrow-parens": ["error", "as-needed"],
+        "brace-style": ["error", "1tbs", {"allowSingleLine":true}],
+        "class-methods-use-this": "off",
+        "complexity": "off",
+        "curly": ["error", "multi-line"],
+        "eqeqeq": "error",
+        "function-call-argument-newline": "off",
+        "function-paren-newline": "off",
+        "func-style":["error","declaration"],
+        "id-length":"off",
+        "indent": ["error", "tab"],
+        "linebreak-style" : "off",
+        "lines-between-class-members": ["error", "always", {"exceptAfterSingleLine": true}],
+        "max-len": ["error", 110],
+        "max-lines": ["error", 1000],
+        "max-statements": "off",
+        "multiline-ternary": ["error", "always-multiline"],
+        "no-extra-parens": ["error", "all", {
+            "enforceForArrowConditionals": false, 
+            "nestedBinaryExpressions": false
+        }],
+        "no-magic-numbers": ["error", {"ignore":[-1, 0, 1, 2]}],
+        "no-plusplus": "off",
+        "no-return-await": "off",
+        "no-shadow": "off",
+        "no-tabs": "off",
+        "no-ternary": "off",
+        "no-throw-literal": "error",
+        "no-undef-init": "off",
+        "no-undefined": "off",
+        "no-underscore-dangle": "off",
+        "no-use-before-define": "off",
+        "one-var": "off",
+        "padded-blocks": "off",
+        "prefer-destructuring": "off",
+        "prefer-object-has-own":"off",
+        "quotes": ["error", "single"],
+        "semi": "off",
+        "sort-imports": ["error", {"ignoreCase": true}]
+    },
+    "ignorePatterns": [
+        "out",
+        "dist",
+        "**/*.d.ts"
+    ]
+}
