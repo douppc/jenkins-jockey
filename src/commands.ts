@@ -127,7 +127,7 @@ export namespace commands {
 	 */
 	export async function connectServer (urlIn : URL | undefined) {
 		let url : URL | undefined = undefined;
-		if (!urlIn) {
+		if (!urlIn || !(urlIn instanceof URL)) {
 			const urlStr = await window.showInputBox({
 				'ignoreFocusOut': true,
 				'prompt': 'Enter the URL to the Jenkins server (e.g. https://jenkins.mydomain.com/',

@@ -60,7 +60,8 @@ export namespace config {
 		const cfg = workspace.getConfiguration('jenkinsJockey');
 		let servers : ServerConfig[] = [];
 		servers = cfg.get('servers', []);
-		const newServers = servers.filter(server => server.url !== url.hostname);
+		const newServers = servers.filter(
+			server => server.url !== url.origin && server.url !== url.toString());
 		if (newServers.length !== servers.length) await cfg.update('servers', newServers, true);
 	}
 
@@ -75,7 +76,7 @@ export namespace config {
 		servers = cfg.get('servers', servers);
 		let change = false;
 		servers.forEach(server => {
-			if (server.url === url.hostname && server.label !== newName) {
+			if ((server.url === url.origin || server.url === url.toString()) && server.label !== newName) {
 				server.label = newName;
 				change = true;
 			}

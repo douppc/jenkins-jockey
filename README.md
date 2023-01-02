@@ -1,71 +1,110 @@
-# jenkins-jockey README
+# Jenkins Jockey
 
-This is the README for your extension "jenkins-jockey". After writing up a brief description, we recommend including the following sections.
+An extension for Visual Studio Code that aids in debugging pipeline scripts and shared libraries. This
+extension is generally designed around the [replay
+capability](https://www.jenkins.io/blog/2016/04/14/replay-with-pipeline/) in Jenkins.
 
 ## Features
 
-Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
+- Connect to any number of Jenkins servers.
+- Browse jobs and builds in a tree view.
+  - Refresh jobs to see current status.
+  - Easily open jobs and builds in a web browser.
+  - View logs for builds in a new document tab.
+  - Filter out disabled jobs.
+- Debug pipeline scripts and shared libraries (aka Replay).
+  - Launch Replay from any build or job.
+  - See all pipeline script and shared library files used in the previous build.
+  - Edit files from the previous build, to be submitted when a new replay is triggered.
+  - See build log in VS Code output window.
+    - Files mentioned in errors in the log are linked directly to the files shown in the file list.
+    - Output window shows incremental build log output, just like the Jenkins web views.
+  - Errors found in the build log are highlighted in the source code.
+  - Compare pipeline script and shared library files with the original files from the previous build.
+  - Compare pipeline script and shared library files with files found in the current workspace.
+  - Trigger a build with local changes made to files.
+    - Automatically tracks the new build, showing log output and files.
 
-For example if there is an image subfolder under your extension project workspace:
+## Getting Started
 
-\!\[feature X\]\(images/feature-x.png\)
+The following is a typical workflow using Jenkins Jockey to debug pipeline scripts and shared libraries:
 
-> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
+1. Add a Jenkins server:
 
-## Requirements
+   ![Connect Jenkins Server](docs/images/connect-server.png)
+2. Find a job and activate replay:
 
-If you have any requirements or dependencies, add a section describing those and how to install and configure them.
+   ![Activate Replay](docs/images/tree-active-replay.png)
+3. Find errors in files:
+
+   ![Replay Log](docs/images/replay-log.png)
+4. Make edits to the files (remember to save):
+
+   ![Replay File Pick](docs/images/replay-file-pick.png)
+5. Run the replay with your new changes:
+
+   ![Run Replay](docs/images/run-replay.png)
+6. Repeat steps 4-6 as needed.
+
+Some additional things to do:
+
+- Rename your server:
+  
+  ![Rename Server](docs/images/rename-server.png)
+
+Always check contextual menus, there's usually more!
+
+## Troubleshooting
+
+It is quite possible that Jeknins Jockey will display a job with `(unknown)` as a suffix if you have some
+plugins installed on your Jenkins server that create unknown types of jobs or job containers. In this event,
+you can correct this problem by right-clicking on the item in the tree with `(unknown)` in the name and choose
+whether it is a job or job container (folder).
 
 ## Extension Settings
 
-Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
-
-For example:
-
 This extension contributes the following settings:
 
-* `myExtension.enable`: Enable/disable this extension.
-* `myExtension.thing`: Set to `blah` to do something.
+- `jenkinsJockey.servers`: The list of servers (array of objects), where each server specifies a `url`
+  property (the root of the server), and a `label` for the server
 
-## Known Issues
+  ```json
+  "jenkinsJockey.servers": [
+    {
+      "url": "https;//jenkins.example.com",
+      "label": "my server label"
+    }
+  ]
+  ```
 
-Calling out known issues can help limit users opening duplicate issues against your extension.
+- `jenkinsJockey.extraJobClasses`: a list of Jenkins classes to consider jobs. This can be used to resolve job
+  items in the browser with `(unknown)` that are not usable.
+- `jenkinsJockey.extraJobContainerClasses`: a list of Jenkins classes to consider job containers. This can be
+  used to resolve items in the browser with `(unknown)` that are not usable.
+- `jenkinsJockey.hideDisabled`: if checked, hides disabled jobs from the job browser.
 
 ## Release Notes
 
-Users appreciate release notes as you update your extension.
+### 0.0.1
 
-### 1.0.0
+Initial release
 
-Initial release of ...
+## Future Development
 
-### 1.0.1
+- Add a command to trigger a build from the job tree (no parameters).
+- Add a command to trigger a build with parameters from the job tree.
+- Add a command to save groovy file changes in the replay to the open workspace.
 
-Fixed issue #.
+## Developer Information
 
-### 1.1.0
+An API is available to access the functionality and data of this extension. Please see the
+[wiki](https://github.com/douppc/jenkins-jockey/wiki) on the GitHub project page for details.
 
-Added features X, Y, and Z.
+## Feedback
 
----
+Please report any issues or requests on the [GitHub
+Project](https://https://github.com/douppc/jenkins-jockey).
 
-## Following extension guidelines
+## License
 
-Ensure that you've read through the extensions guidelines and follow the best practices for creating your extension.
-
-* [Extension Guidelines](https://code.visualstudio.com/api/references/extension-guidelines)
-
-## Working with Markdown
-
-You can author your README using Visual Studio Code. Here are some useful editor keyboard shortcuts:
-
-* Split the editor (`Cmd+\` on macOS or `Ctrl+\` on Windows and Linux).
-* Toggle preview (`Shift+Cmd+V` on macOS or `Shift+Ctrl+V` on Windows and Linux).
-* Press `Ctrl+Space` (Windows, Linux, macOS) to see a list of Markdown snippets.
-
-## For more information
-
-* [Visual Studio Code's Markdown Support](http://code.visualstudio.com/docs/languages/markdown)
-* [Markdown Syntax Reference](https://help.github.com/articles/markdown-basics/)
-
-**Enjoy!**
+Jenkins Jockey is released under the [MIT License](LICENSE).
