@@ -273,7 +273,7 @@
     "viewsWelcome": [
       {
         "view": "jenkinsJockeyJobTree",
-        "contents": "Jenkins Jockey needs to connect to at least one Jenkins server to function properly.\n[Connect to Jenkins](command:jenkins-jockey.connect)",
+        "contents": "Jenkins Jockey needs to connect to at least one Jenkins server to function properly.\n[Connect to Jenkins](command:jenkins-jockey.connectServer)",
         "when": "config.jenkinsJockey.servers.length == 0"
       },
       {
