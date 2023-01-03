@@ -2,7 +2,7 @@
 /* global URL */
 import {ExtensionContext, SecretStorage} from 'vscode';
 import axios from 'axios';
-import {BuildData} from './BuildData';
+import {BuildData} from './builddata';
 import {IncrementalLogData} from './incrementallogdata';
 import {JobContainerData} from './jobcontainerdata';
 import {JobData} from './jobdata';

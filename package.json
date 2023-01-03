@@ -4,8 +4,12 @@
   "displayName": "Jenkins Jockey",
   "description": "Tools to debug and run Jenkins pipeline scripts and shared libraries.",
   "version": "0.0.1",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/douppc/jenkins-jockey.git"
+  },
   "engines": {
-    "vscode": "^1.73.1"
+    "vscode": "^1.74.0"
   },
   "categories": [
     "Other"
@@ -297,7 +301,9 @@
     "api-documenter": "api-documenter markdown --input-folder ./build/api/temp --output-folder ./build/markdown",
     "build-docs": "npm run build-declarations && npm run api-extractor && npm run api-documenter",
     "typedoc": "rimraf dist/docs/* && typedoc",
-    "test": "node ./out/test/runTest.js"
+    "test": "node ./out/test/runTest.js",
+    "build-package": "vsce package",
+    "publish-package": "vsce publish"
   },
   "devDependencies": {
     "@types/glob": "^8.0.0",
@@ -308,6 +314,7 @@
     "@typescript-eslint/eslint-plugin": "^5.45.0",
     "@typescript-eslint/parser": "^5.45.0",
     "@vscode/test-electron": "^2.2.0",
+    "@vscode/vsce": "^2.16.0",
     "eslint": "^8.28.0",
     "fs-extra": "^11.1.0",
     "glob": "^8.0.3",
