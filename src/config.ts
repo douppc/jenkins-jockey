@@ -81,7 +81,7 @@ export namespace config {
 				change = true;
 			}
 		});
-		if (change) await cfg.update('servers', servers);
+		if (change) await cfg.update('servers', servers, true);
 	}
 
 	/**
