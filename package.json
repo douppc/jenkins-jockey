@@ -3,7 +3,7 @@
   "publisher": "doupp",
   "displayName": "Jenkins Jockey",
   "description": "Tools to debug and run Jenkins pipeline scripts and shared libraries.",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "repository": {
     "type": "git",
     "url": "https://github.com/douppc/jenkins-jockey.git"
