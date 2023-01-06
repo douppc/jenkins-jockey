@@ -18,7 +18,7 @@ import {BuildStatus} from '../model';
 import {replay} from '.';
 import {RestApi} from '../service';
 
-const _logFetchInterval = 3000;
+const _logFetchInterval = 500;
 const _entireLineCol = 1000;
 // eslint-disable-next-line max-len
 const _linkRegex = /(?<pre>at\s+[^(\n:]+\(|\/vars\/)(?<lt>(?<fn>[^:)]+)(?::\s*(?<ln>\d+)?)?)(?::\s*(?<msg>[^@]+?)\s*@\s*line\s*\d+\s*,\s*column\s*(?<cn>\d+))?/u;
@@ -180,7 +180,7 @@ export class ReplayLogHandler implements Disposable, DocumentLinkProvider {
 			const inc = await RestApi.getIncrementalBuildLog(active.url, this._logOffset);
 			this._log += inc.data;
 			if (inc.more) this._logTimer = setTimeout(this.fetchMoreLog.bind(this), _logFetchInterval);
-			this.updateForLog(this._logOffset);
+			this._logChannel.append(inc.data);
 			this._logOffset = inc.offset;
 		}
 	}
@@ -189,12 +189,8 @@ export class ReplayLogHandler implements Disposable, DocumentLinkProvider {
 		const active = replay.getActive();
 		if (active) {
 			this._log = await RestApi.getBuildLog(active.url);
-			this.updateForLog(0);
+			this._logChannel.append(this._log);
 		}
-	}
-
-	private updateForLog (offset: number) {
-		this._logChannel.append(this._log.substring(offset));
 	}
 
 }
