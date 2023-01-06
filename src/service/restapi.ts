@@ -161,15 +161,15 @@ export class RestApi {
 	 * @param urlIn The URL of the build to replay.
 	 * @param files The contents of the files to be sent with the replay.
 	 */
-	static async replayBuild (urlIn : URL, files : ReplayFileData[]) : Promise<void> {
+	static async replayBuild (urlIn : URL, files : {[k:string]:string}) : Promise<void> {
 		const url = new URL(urlIn.toString());
 		url.pathname += 'replay/run';
 		const options = await this.getRequestOptions(url);
 		const params : {[key : string] : string} = {};
 		const json : {[key : string] : string} = {};
-		files.forEach(file => {
-			params[file.formName] = file.contents;
-			json[file.formName.substring(2)] = file.contents;
+		Object.keys(files).forEach(file => {
+			params[file] = files[file];
+			json[file.substring(2)] = files[file];
 		});
 		params.json = JSON.stringify(json);
 		params.Submit = 'Run';

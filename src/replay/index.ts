@@ -107,7 +107,10 @@ export namespace replay {
 	export async function run () {
 		if (!_activeBuild || _activeBuild.status === BuildStatus.building) return;
 		const job = _activeBuild.parent as Job;
-		const fileData = Object.values(_files).map(f => f.data);
+		const fileData : {[k:string]:string} = {};
+		Object.values(_files).forEach(f => {
+			fileData[f.data.formName] = f.content;
+		});
 		await RestApi.replayBuild(_activeBuild.url, fileData);
 		await job.refreshData();
 		await activate(job.children[0] as Build);
