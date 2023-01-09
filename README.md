@@ -85,6 +85,15 @@ This extension contributes the following settings:
 
 ## Release Notes
 
+### 0.0.2
+
+Bug Fixes: 
+
+- Fixed log file display for active replay while still building.
+- Fixed replay not submitting current file contents (what was in the editor).
+- Fixed renaming jobs corrupting the configuration. May require deleing workspace configuration entries for
+  `jenkinsJockey` (everything should be global).
+
 ### 0.0.1
 
 Initial release
